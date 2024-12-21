@@ -3,7 +3,9 @@ package main
 import (
 	"log/slog"
 	"os"
-	"template/internal/config"
+
+	"github.com/Bakhram74/gw-currency-wallet/internal/app"
+	"github.com/Bakhram74/gw-currency-wallet/internal/config"
 )
 
 const (
@@ -18,13 +20,7 @@ func main() {
 	log := setupLogger(cfg.Env)
 	slog.SetDefault(log)
 
-
-	
-	// a := app.New(&cfg, logger)
-
-	// if err := executor.Run(a); err != nil {
-	// 	logger.Fatal(err)
-	// }
+	app.Run(cfg)
 }
 
 func setupLogger(env string) *slog.Logger {

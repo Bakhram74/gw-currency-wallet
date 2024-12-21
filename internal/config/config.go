@@ -2,8 +2,9 @@ package config
 
 import (
 	"log"
-	"template/pkg/env"
 	"time"
+
+	"github.com/Bakhram74/gw-currency-wallet/pkg/env"
 
 	"github.com/joho/godotenv"
 )
@@ -25,7 +26,7 @@ type StorageConfig struct {
 	PostgresDatabase string
 	PostgresUsername string
 	PostgresPassword string
-	PostgresSslMode  bool
+	PostgresSslMode  string
 }
 
 type TokenConfig struct {
@@ -44,7 +45,7 @@ func NewConfig() Config {
 		PostgresDatabase: env.GetEnv("DATABASE", "wallet"),
 		PostgresUsername: env.GetEnv("USERNAME_DB", "postgres"),
 		PostgresPassword: env.GetEnv("PASSWORD_DB", "secret"),
-		PostgresSslMode:  env.GetEnvAsBool("SSL_MODE", false),
+		PostgresSslMode:  env.GetEnv("SSL_MODE", "disable"),
 	}
 
 	config := Config{
