@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	"github.com/Bakhram74/gw-currency-wallet/pkg/httpserver"
-	"github.com/Bakhram74/gw-currency-wallet/pkg/utils/jwt"
+	"github.com/Bakhram74/gw-currency-wallet/pkg/jwt"
 	"github.com/gin-gonic/gin"
 )
 

@@ -43,3 +43,22 @@ func (w *WalletRepo) GetWallet(ctx context.Context, userID string) (Wallet, erro
 
 	return i, nil
 }
+
+func (w *WalletRepo) DepositWallet(ctx context.Context, userID, currency string, amount float32) (Wallet, error) {
+
+	query := fmt.Sprintf(`UPDATE "wallet" SET %s = %s + $1 WHERE user_id = $2 RETURNING *`, currency, currency)
+
+	row := w.db.QueryRow(ctx, query, amount, userID)
+	var i Wallet
+	err := row.Scan(
+		&i.UserID,
+		&i.Usd,
+		&i.Rub,
+		&i.Eur,
+	)
+
+	if err != nil {
+		return Wallet{}, err
+	}
+	return i, nil
+}

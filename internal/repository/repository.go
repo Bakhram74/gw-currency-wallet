@@ -33,6 +33,7 @@ type UserQueries interface {
 type WalletQueries interface {
 	CreateWallet(ctx context.Context, userID string) error
 	GetWallet(ctx context.Context, userID string) (Wallet, error)
+	DepositWallet(ctx context.Context, userID, currency string, amount float32) (Wallet, error)
 }
 
 type Repository struct {

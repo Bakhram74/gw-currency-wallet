@@ -4,7 +4,7 @@ import (
 	"github.com/Bakhram74/gw-currency-wallet/internal/config"
 	v1 "github.com/Bakhram74/gw-currency-wallet/internal/http/v1"
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
-	"github.com/Bakhram74/gw-currency-wallet/pkg/utils/jwt"
+	"github.com/Bakhram74/gw-currency-wallet/pkg/jwt"
 	"github.com/gin-gonic/gin"
 )
 

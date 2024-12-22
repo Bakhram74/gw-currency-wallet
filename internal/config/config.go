@@ -45,7 +45,7 @@ func NewConfig() Config {
 	}
 	token := TokenConfig{
 		TokenSecretKey:      env.GetEnv("TOKEN_SECRET_KEY", "cdwasfr43q12deasw90fj32lf8snre13"),
-		AccessTokenDuration: time.Minute * 40,
+		AccessTokenDuration: time.Hour * 100,
 	}
 	config := Config{
 		JWT:      token,

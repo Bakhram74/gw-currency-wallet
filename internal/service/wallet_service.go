@@ -6,6 +6,7 @@ import (
 
 	"github.com/Bakhram74/gw-currency-wallet/internal/config"
 	"github.com/Bakhram74/gw-currency-wallet/internal/repository"
+	"github.com/Bakhram74/gw-currency-wallet/internal/service/entity"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/logs"
 )
 
@@ -22,7 +23,7 @@ func NewBalanceService(repo *repository.Repository, cfg config.Config) *BalanceS
 }
 
 func (b *BalanceService) GetBalance(ctx context.Context, userID string) (repository.Wallet, error) {
-	const op = "Auth.Register"
+	const op = "Balance.GetBalance"
 
 	log := slog.With(
 		slog.String("op", op),
@@ -36,5 +37,25 @@ func (b *BalanceService) GetBalance(ctx context.Context, userID string) (reposit
 		return repository.Wallet{}, err
 	}
 
+	return wallet, nil
+}
+
+func (b *BalanceService) DepositBalance(ctx context.Context, userID string, param entity.Transaction) (repository.Wallet, error) {
+	const op = "Balance.DepositBalance"
+
+	log := slog.With(
+		slog.String("op", op),
+		slog.String("userID", userID),
+		slog.Float64("amount", float64(param.Amount)),
+		slog.String("currency", string(param.Currency)),
+	)
+
+	log.Info("attempting to deposit balance")
+
+	wallet, err := b.repo.WalletQueries.DepositWallet(ctx, userID, string(param.Currency), param.Amount)
+	if err != nil {
+		log.Error("failed to deposit balance", logs.Err(err))
+		return repository.Wallet{}, err
+	}
 	return wallet, nil
 }

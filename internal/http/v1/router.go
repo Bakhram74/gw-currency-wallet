@@ -3,7 +3,7 @@ package v1
 import (
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
 
-	"github.com/Bakhram74/gw-currency-wallet/pkg/utils/jwt"
+	"github.com/Bakhram74/gw-currency-wallet/pkg/jwt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,5 +29,6 @@ func (r *Router) Init(api *gin.RouterGroup) {
 	v1.Use(authMiddleware(r.jwtMaker))
 	{
 		v1.GET("/balance", r.balance)
+		v1.POST("/wallet/deposit", r.deposit)
 	}
 }

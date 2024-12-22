@@ -13,7 +13,7 @@ import (
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/client/postgres"
 	httpserver "github.com/Bakhram74/gw-currency-wallet/pkg/httpserver"
-	"github.com/Bakhram74/gw-currency-wallet/pkg/utils/jwt"
+	"github.com/Bakhram74/gw-currency-wallet/pkg/jwt"
 )
 
 func Run(cfg config.Config) {

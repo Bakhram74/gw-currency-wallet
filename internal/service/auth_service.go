@@ -7,9 +7,9 @@ import (
 
 	"github.com/Bakhram74/gw-currency-wallet/internal/config"
 	"github.com/Bakhram74/gw-currency-wallet/internal/repository"
+	"github.com/Bakhram74/gw-currency-wallet/pkg/jwt"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/logs"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/utils"
-	"github.com/Bakhram74/gw-currency-wallet/pkg/utils/jwt"
 )
 
 type AuthService struct {
