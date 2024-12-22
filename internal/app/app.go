@@ -13,9 +13,16 @@ import (
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/client/postgres"
 	httpserver "github.com/Bakhram74/gw-currency-wallet/pkg/httpServer"
+	"github.com/Bakhram74/gw-currency-wallet/pkg/utils/jwt"
 )
 
 func Run(cfg config.Config) {
+
+	jwtMaker, err := jwt.NewJWTMaker(cfg.JWT.TokenSecretKey)
+	if err != nil {
+		panic(fmt.Errorf("cannot create token maker: %s", err.Error()))
+	}
+
 	dbUrl := url(cfg)
 
 	pg, err := postgres.New(dbUrl)
@@ -31,7 +38,7 @@ func Run(cfg config.Config) {
 
 	repo := repository.New(pg.Pool)
 
-	service := service.NewService(repo)
+	service := service.NewService(repo, jwtMaker, cfg)
 
 	handler := http.NewHandler(cfg, service).Init()
 

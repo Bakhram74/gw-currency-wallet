@@ -10,10 +10,10 @@ import (
 )
 
 type Config struct {
-	Env     string
-	Storage StorageConfig
-	JWT     TokenConfig
-	HttpPort    string
+	Env      string
+	Storage  StorageConfig
+	JWT      TokenConfig
+	HttpPort string
 }
 
 type StorageConfig struct {
@@ -43,11 +43,15 @@ func NewConfig() Config {
 		PostgresPassword: env.GetEnv("PASSWORD_DB", "secret"),
 		PostgresSslMode:  env.GetEnv("SSL_MODE", "disable"),
 	}
-
+	token := TokenConfig{
+		TokenSecretKey:      env.GetEnv("TOKEN_SECRET_KEY", "cdwasfr43q12deasw90fj32lf8snre13"),
+		AccessTokenDuration: time.Minute * 40,
+	}
 	config := Config{
-		HttpPort:    env.GetEnv("HTTP_PORT", "9090"),
-		Env:     env.GetEnv("ENVIRONMENT", "local"),
-		Storage: storage,
+		JWT:      token,
+		HttpPort: env.GetEnv("HTTP_PORT", "9090"),
+		Env:      env.GetEnv("ENVIRONMENT", "local"),
+		Storage:  storage,
 	}
 	return config
 }

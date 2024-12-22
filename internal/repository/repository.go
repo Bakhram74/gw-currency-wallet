@@ -12,7 +12,7 @@ import (
 var (
 	ErrUserExists   = errors.New("username or email already exists")
 	ErrEmailFormat  = errors.New("invalid email value")
-	ErrUserNotFound = errors.New("user not found")
+	ErrUserNotFound = errors.New("invalid username or password")
 )
 
 const (
@@ -28,6 +28,7 @@ type DBTX interface {
 
 type UserQueries interface {
 	CreateUser(ctx context.Context, username, password, email string) (User, error)
+	GetUser(ctx context.Context, username string) (User, error)
 }
 
 type Repository struct {

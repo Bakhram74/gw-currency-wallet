@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
@@ -48,4 +49,27 @@ func (u *UserRepo) CreateUser(ctx context.Context, username, password, email str
 	}
 	return i, nil
 
+}
+
+func (u *UserRepo) GetUser(ctx context.Context, username string) (User, error) {
+	query := `SELECT id, username,password, email,created_at FROM "user"
+      WHERE username = $1`
+
+	row := u.db.QueryRow(ctx, query, username)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.Password,
+		&i.Email,
+		&i.CreatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return i, ErrUserNotFound
+		}
+		return i, fmt.Errorf("failed to get user: %w", err)
+	}
+	return i, nil
 }

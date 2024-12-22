@@ -9,9 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
 func (r *Router) register(ctx *gin.Context) {
-	var reqBody entity.UserReq
+	var reqBody entity.RegisterReq
 
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		errorResponse(ctx, http.StatusBadRequest, err.Error())
@@ -33,29 +32,24 @@ func (r *Router) register(ctx *gin.Context) {
 	})
 }
 
-// 	"username": "string",
-// 	"password": "string"
-// 	}
-
-// 	Ответ:
-
-// 	• Успех: ```200 OK```
-// 	```json
-// 	{
-// 	  "token": "JWT_TOKEN"
-// 	}
-
-// 	• Ошибка: ```401 Unauthorized```
-// 	```json
-// 	{
-// 	  "error": "Invalid username or password"
-// 	}
-
-// 	▎Описание
-
-// 	Авторизация пользователя.
-// 	При успешной авторизации возвращается JWT-токен, который будет использоваться для аутентификации последующих запросов.
-
 func (r *Router) login(ctx *gin.Context) {
+	var reqBody entity.LoginReq
 
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		errorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+	token, err := r.service.Auth.Login(ctx, reqBody.Name, reqBody.Password)
+	if err != nil {
+		if errors.Is(err, repository.ErrUserNotFound) {
+			errorResponse(ctx, http.StatusUnauthorized, err.Error())
+			return
+		}
+		errorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, map[string]string{
+		"token": token,
+	})
 }
