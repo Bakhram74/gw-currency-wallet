@@ -13,6 +13,7 @@ var (
 	ErrUserExists   = errors.New("username or email already exists")
 	ErrEmailFormat  = errors.New("invalid email value")
 	ErrUserNotFound = errors.New("invalid username or password")
+	ErrInsufficientBalance = errors.New("insufficient balance")
 )
 
 const (
@@ -34,6 +35,7 @@ type WalletQueries interface {
 	CreateWallet(ctx context.Context, userID string) error
 	GetWallet(ctx context.Context, userID string) (Wallet, error)
 	DepositWallet(ctx context.Context, userID, currency string, amount float32) (Wallet, error)
+	WithdrawWallet(ctx context.Context, userID, currency string, amount float32) (Wallet, error)
 }
 
 type Repository struct {

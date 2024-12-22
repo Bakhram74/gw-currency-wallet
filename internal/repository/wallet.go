@@ -62,3 +62,34 @@ func (w *WalletRepo) DepositWallet(ctx context.Context, userID, currency string,
 	}
 	return i, nil
 }
+
+func (w *WalletRepo) WithdrawWallet(ctx context.Context, userID, currency string, amount float32) (Wallet, error) {
+	var balance float32
+
+	checkQuery := fmt.Sprintf(`SELECT %s FROM "wallet" WHERE user_id = $1`, currency)
+	err := w.db.QueryRow(ctx, checkQuery, userID).Scan(&balance)
+	if err != nil {
+		return Wallet{}, fmt.Errorf("failed to check balance: %w", err)
+	}
+
+	if balance < amount {
+		return Wallet{}, ErrInsufficientBalance
+	}
+
+	var i Wallet
+
+	updateQuery := fmt.Sprintf(`UPDATE "wallet" SET %s = %s - $1 WHERE user_id = $2 RETURNING user_id, usd, rub, eur`, currency, currency)
+	row := w.db.QueryRow(ctx, updateQuery, amount, userID)
+
+	err = row.Scan(
+		&i.UserID,
+		&i.Usd,
+		&i.Rub,
+		&i.Eur,
+	)
+	if err != nil {
+		return Wallet{}, fmt.Errorf("failed to withdraw: %w", err)
+	}
+
+	return i, nil
+}

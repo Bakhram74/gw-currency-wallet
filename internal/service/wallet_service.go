@@ -59,3 +59,22 @@ func (b *BalanceService) DepositBalance(ctx context.Context, userID string, para
 	}
 	return wallet, nil
 }
+
+func (b *BalanceService) WithdrawBalance(ctx context.Context, userID string, param entity.Transaction) (repository.Wallet, error) {
+	const op = "Balance.WithdrawBalance"
+
+	log := slog.With(
+		slog.String("op", op),
+		slog.String("userID", userID),
+		slog.Float64("amount", float64(param.Amount)),
+		slog.String("currency", string(param.Currency)),
+	)
+
+	log.Info("attempting to withdraw balance")
+	wallet, err := b.repo.WalletQueries.WithdrawWallet(ctx, userID, string(param.Currency), param.Amount)
+	if err != nil {
+		log.Error("failed to withdraw balance", logs.Err(err))
+		return repository.Wallet{}, err
+	}
+	return wallet, nil
+}

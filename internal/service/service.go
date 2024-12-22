@@ -17,6 +17,7 @@ type Auth interface {
 type Balance interface {
 	GetBalance(ctx context.Context, userID string) (repository.Wallet, error)
 	DepositBalance(ctx context.Context,userID string,param entity.Transaction)(repository.Wallet, error)
+	WithdrawBalance(ctx context.Context,userID string,param entity.Transaction)(repository.Wallet, error)
 }
 
 type Service struct {

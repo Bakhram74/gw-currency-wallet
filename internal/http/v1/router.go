@@ -30,5 +30,6 @@ func (r *Router) Init(api *gin.RouterGroup) {
 	{
 		v1.GET("/balance", r.balance)
 		v1.POST("/wallet/deposit", r.deposit)
+		v1.POST("/wallet/withdraw", r.withdraw)
 	}
 }
