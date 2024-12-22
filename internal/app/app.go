@@ -12,7 +12,7 @@ import (
 	"github.com/Bakhram74/gw-currency-wallet/internal/repository"
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/client/postgres"
-	httpserver "github.com/Bakhram74/gw-currency-wallet/pkg/httpServer"
+	httpserver "github.com/Bakhram74/gw-currency-wallet/pkg/httpserver"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/utils/jwt"
 )
 
@@ -40,7 +40,7 @@ func Run(cfg config.Config) {
 
 	service := service.NewService(repo, jwtMaker, cfg)
 
-	handler := http.NewHandler(cfg, service).Init()
+	handler := http.NewHandler(cfg, service, jwtMaker).Init()
 
 	slog.Debug("server starting", slog.String("port", cfg.HttpPort))
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HttpPort))

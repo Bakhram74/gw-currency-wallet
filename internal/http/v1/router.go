@@ -2,16 +2,20 @@ package v1
 
 import (
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
+
+	"github.com/Bakhram74/gw-currency-wallet/pkg/utils/jwt"
 	"github.com/gin-gonic/gin"
 )
 
 type Router struct {
-	service *service.Service
+	service  *service.Service
+	jwtMaker *jwt.JWTMaker
 }
 
-func NewRoute(service *service.Service) *Router {
+func NewRoute(service *service.Service, jwtMaker *jwt.JWTMaker) *Router {
 	return &Router{
-		service: service,
+		jwtMaker: jwtMaker,
+		service:  service,
 	}
 }
 
@@ -21,13 +25,9 @@ func (r *Router) Init(api *gin.RouterGroup) {
 		v1.POST("/register", r.register)
 		v1.POST("/login", r.login)
 	}
-}
 
-
-type errResponse struct {
-	Error string `json:"error"`
-}
-
-func errorResponse(c *gin.Context, code int, msg string) {
-	c.AbortWithStatusJSON(code, errResponse{msg})
+	v1.Use(authMiddleware(r.jwtMaker))
+	{
+		v1.GET("/balance", r.balance)
+	}
 }

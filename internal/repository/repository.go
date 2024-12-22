@@ -30,15 +30,21 @@ type UserQueries interface {
 	CreateUser(ctx context.Context, username, password, email string) (User, error)
 	GetUser(ctx context.Context, username string) (User, error)
 }
+type WalletQueries interface {
+	CreateWallet(ctx context.Context, userID string) error
+	GetWallet(ctx context.Context, userID string) (Wallet, error)
+}
 
 type Repository struct {
 	connPool *pgxpool.Pool
 	UserQueries
+	WalletQueries
 }
 
 func New(connPool *pgxpool.Pool) *Repository {
 	return &Repository{
-		connPool:    connPool,
-		UserQueries: NewUserRepo(connPool),
+		connPool:      connPool,
+		UserQueries:   NewUserRepo(connPool),
+		WalletQueries: NewWalletRepo(connPool),
 	}
 }

@@ -41,12 +41,15 @@ func (a *AuthService) Register(ctx context.Context, username, password, email st
 		log.Error("failed to generate password hash", logs.Err(err))
 		return fmt.Errorf("%s: %w", op, err)
 	}
-	_, err = a.repo.UserQueries.CreateUser(ctx, username, hashedPassword, email)
+	user, err := a.repo.UserQueries.CreateUser(ctx, username, hashedPassword, email)
 	if err != nil {
 		log.Error("failed to create user", logs.Err(err))
 		return err
 	}
 
+	if err := a.repo.WalletQueries.CreateWallet(ctx, user.ID); err != nil {
+		log.Error("Failed to create wallet for user", logs.Err(err))
+	}
 	return nil
 }
 
