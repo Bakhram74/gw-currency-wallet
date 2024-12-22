@@ -22,3 +22,12 @@ func (r *Router) Init(api *gin.RouterGroup) {
 		v1.POST("/login", r.login)
 	}
 }
+
+
+type errResponse struct {
+	Error string `json:"error"`
+}
+
+func errorResponse(c *gin.Context, code int, msg string) {
+	c.AbortWithStatusJSON(code, errResponse{msg})
+}

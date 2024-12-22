@@ -1,36 +1,36 @@
 package v1
 
-import "github.com/gin-gonic/gin"
+import (
+	"errors"
+	"net/http"
 
+	"github.com/Bakhram74/gw-currency-wallet/internal/repository"
+	"github.com/Bakhram74/gw-currency-wallet/internal/service/entity"
+	"github.com/gin-gonic/gin"
+)
 
-
-// {
-// 	"username": "string",
-// 	"password": "string",
-// 	"email": "string"
-//   }
-
-//   Ответ:
-//   • Успех: ```201 Created```
-//   ```json
-//   {
-// 	"message": "User registered successfully"
-//   }
-
-//   • Ошибка: ```400 Bad Request```
-//   ```json
-//   {
-// 	"error": "Username or email already exists"
-//   }
-
-//   ▎Описание
-
-//   Регистрация нового пользователя.
-//   Проверяется уникальность имени пользователя и адреса электронной почты.
-//   Пароль должен быть зашифрован перед сохранением в базе данных.
 
 func (r *Router) register(ctx *gin.Context) {
+	var reqBody entity.UserReq
 
+	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
+		errorResponse(ctx, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err := r.service.Auth.Register(ctx, reqBody.Name, reqBody.Password, reqBody.Email)
+	if err != nil {
+		if errors.Is(err, repository.ErrUserExists) || errors.Is(err, repository.ErrEmailFormat) {
+			errorResponse(ctx, http.StatusBadRequest, err.Error())
+			return
+		}
+		errorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, map[string]string{
+		"message": "User registered successfully",
+	})
 }
 
 // 	"username": "string",

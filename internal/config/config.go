@@ -13,11 +13,7 @@ type Config struct {
 	Env     string
 	Storage StorageConfig
 	JWT     TokenConfig
-	Http    Http
-}
-
-type Http struct {
-	Port string
+	HttpPort    string
 }
 
 type StorageConfig struct {
@@ -49,6 +45,7 @@ func NewConfig() Config {
 	}
 
 	config := Config{
+		HttpPort:    env.GetEnv("HTTP_PORT", "9090"),
 		Env:     env.GetEnv("ENVIRONMENT", "local"),
 		Storage: storage,
 	}

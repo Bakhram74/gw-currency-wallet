@@ -39,11 +39,3 @@ func (h *Handler) initAPI(router *gin.Engine) {
 		v1.Init(api)
 	}
 }
-
-type errResponse struct {
-	Error string `json:"error"`
-}
-
-func ErrorResponse(c *gin.Context, code int, msg string) {
-	c.AbortWithStatusJSON(code, errResponse{msg})
-}

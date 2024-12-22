@@ -10,9 +10,14 @@ import (
 )
 
 var (
-	ErrUserNameExists = errors.New("username already exists")
-	ErrEmailExists = errors.New("email already exists")
+	ErrUserExists   = errors.New("username or email already exists")
+	ErrEmailFormat  = errors.New("invalid email value")
 	ErrUserNotFound = errors.New("user not found")
+)
+
+const (
+	UniqueViolation = "23505"
+	CheckViolation  = "23514"
 )
 
 type DBTX interface {

@@ -35,7 +35,8 @@ func Run(cfg config.Config) {
 
 	handler := http.NewHandler(cfg, service).Init()
 
-	httpServer := httpserver.New(handler, httpserver.Port(cfg.Http.Port))
+	slog.Debug("server starting", slog.String("port", cfg.HttpPort))
+	httpServer := httpserver.New(handler, httpserver.Port(cfg.HttpPort))
 
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
