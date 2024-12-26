@@ -10,10 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	ErrInvalidCurrencyAmount = errors.New("invalid amount or currency")
-	ErrInsufficientAmount    = errors.New("insufficient founds or invalid amount")
-)
 
 func (r *Router) balance(ctx *gin.Context) {
 	userID, err := getUserId(ctx)

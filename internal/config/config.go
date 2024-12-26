@@ -14,6 +14,7 @@ type Config struct {
 	Storage  StorageConfig
 	JWT      TokenConfig
 	HttpPort string
+	GrpcPort string
 }
 
 type StorageConfig struct {
@@ -50,8 +51,10 @@ func NewConfig() Config {
 	config := Config{
 		JWT:      token,
 		HttpPort: env.GetEnv("HTTP_PORT", "9090"),
+		GrpcPort: env.GetEnv("GRPC_PORT", "44044"),
 		Env:      env.GetEnv("ENVIRONMENT", "local"),
 		Storage:  storage,
+		
 	}
 	return config
 }

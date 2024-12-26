@@ -5,21 +5,24 @@ import (
 	v1 "github.com/Bakhram74/gw-currency-wallet/internal/http/v1"
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/jwt"
+	"github.com/Bakhram74/proto-exchange/pb"
 	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
-	config   config.Config
-	service  *service.Service
-	jwtMaker *jwt.JWTMaker
+	config     config.Config
+	service    *service.Service
+	jwtMaker   *jwt.JWTMaker
+	grpcClient pb.ExchangeServiceClient
 }
 
-func NewHandler(config config.Config, service *service.Service, jwtMaker *jwt.JWTMaker) *Handler {
+func NewHandler(config config.Config, service *service.Service, jwtMaker *jwt.JWTMaker, grpcClient pb.ExchangeServiceClient) *Handler {
 
 	return &Handler{
-		service:  service,
-		config:   config,
-		jwtMaker: jwtMaker,
+		service:    service,
+		config:     config,
+		jwtMaker:   jwtMaker,
+		grpcClient: grpcClient,
 	}
 }
 
@@ -37,7 +40,7 @@ func (h *Handler) Init() *gin.Engine {
 
 func (h *Handler) initAPI(router *gin.Engine) {
 	api := router.Group("/api")
-	v1 := v1.NewRoute(h.service, h.jwtMaker)
+	v1 := v1.NewRoute(h.service, h.jwtMaker, h.grpcClient)
 	{
 		v1.Init(api)
 	}

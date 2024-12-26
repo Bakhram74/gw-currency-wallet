@@ -1,5 +1,7 @@
 github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161 h1:L/gRVlceqvL25UVaW/CKtUDjefjrs0SPonmDGUVOYP0=
 github.com/Azure/go-ansiterm v0.0.0-20230124172434-306776ec8161/go.mod h1:xomTg63KZ2rFqZQzSB4Vz2SUXa1BpHTVz9L5PTmPC4E=
+github.com/Bakhram74/proto-exchange v0.0.0-20241223175500-c456fd95c3d1 h1:qdbQEkT8Hn1mw1qJCOzCpH1V6C7+sOoFdQR9by/s9Fs=
+github.com/Bakhram74/proto-exchange v0.0.0-20241223175500-c456fd95c3d1/go.mod h1:Dzd75GRsm+MBTQ1UPy1Rr7esQ9JGbh1FQxo0bWm+wew=
 github.com/Microsoft/go-winio v0.6.2 h1:F2VQgta7ecxGYO8k3ZZz3RS8fVIXVxONVUPlNERoyfY=
 github.com/Microsoft/go-winio v0.6.2/go.mod h1:yd8OoFMLzJbo9gZq8j5qaps8bJ9aShtEA8Ipt1oGCvU=
 github.com/bytedance/sonic v1.11.6 h1:oUp34TzMlL+OY1OUWxHqsdkgC/Zfc85zGqw9siXjrc0=

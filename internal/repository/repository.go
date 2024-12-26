@@ -4,15 +4,16 @@ import (
 	"context"
 	"errors"
 
+	"github.com/Bakhram74/gw-currency-wallet/internal/service/entity"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var (
-	ErrUserExists   = errors.New("username or email already exists")
-	ErrEmailFormat  = errors.New("invalid email value")
-	ErrUserNotFound = errors.New("invalid username or password")
+	ErrUserExists          = errors.New("username or email already exists")
+	ErrEmailFormat         = errors.New("invalid email value")
+	ErrUserNotFound        = errors.New("invalid username or password")
 	ErrInsufficientBalance = errors.New("insufficient balance")
 )
 
@@ -37,17 +38,22 @@ type WalletQueries interface {
 	DepositWallet(ctx context.Context, userID, currency string, amount float32) (Wallet, error)
 	WithdrawWallet(ctx context.Context, userID, currency string, amount float32) (Wallet, error)
 }
+type ExchangeQueries interface {
+	ExchangeCurrency(ctx context.Context, userID, fromCurrency, toCurrency string, rate, amount float32) (entity.ExchangeRepoResponse, error)
+}
 
 type Repository struct {
 	connPool *pgxpool.Pool
 	UserQueries
 	WalletQueries
+	ExchangeQueries
 }
 
 func New(connPool *pgxpool.Pool) *Repository {
 	return &Repository{
-		connPool:      connPool,
-		UserQueries:   NewUserRepo(connPool),
-		WalletQueries: NewWalletRepo(connPool),
+		connPool:        connPool,
+		UserQueries:     NewUserRepo(connPool),
+		WalletQueries:   NewWalletRepo(connPool),
+		ExchangeQueries: NewExchangeRepo(connPool),
 	}
 }

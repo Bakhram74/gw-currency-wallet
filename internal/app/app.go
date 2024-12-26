@@ -8,12 +8,14 @@ import (
 	"syscall"
 
 	"github.com/Bakhram74/gw-currency-wallet/internal/config"
+	"github.com/Bakhram74/gw-currency-wallet/internal/grpcClient"
 	"github.com/Bakhram74/gw-currency-wallet/internal/http"
 	"github.com/Bakhram74/gw-currency-wallet/internal/repository"
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/client/postgres"
 	httpserver "github.com/Bakhram74/gw-currency-wallet/pkg/httpserver"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/jwt"
+	"github.com/Bakhram74/proto-exchange/pb"
 )
 
 func Run(cfg config.Config) {
@@ -40,7 +42,12 @@ func Run(cfg config.Config) {
 
 	service := service.NewService(repo, jwtMaker, cfg)
 
-	handler := http.NewHandler(cfg, service, jwtMaker).Init()
+	conn := grpcClient.New(cfg.GrpcPort)
+	defer conn.Close()
+
+	client := pb.NewExchangeServiceClient(conn)
+
+	handler := http.NewHandler(cfg, service, jwtMaker, client).Init()
 
 	slog.Debug("server starting", slog.String("port", cfg.HttpPort))
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HttpPort))

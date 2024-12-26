@@ -42,6 +42,7 @@ require (
 )
 
 require (
+	github.com/Bakhram74/proto-exchange v0.0.0-20241223175500-c456fd95c3d1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-migrate/migrate/v4 v4.18.1

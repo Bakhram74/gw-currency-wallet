@@ -4,7 +4,6 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/Bakhram74/gw-currency-wallet/internal/config"
 	"github.com/Bakhram74/gw-currency-wallet/internal/repository"
 	"github.com/Bakhram74/gw-currency-wallet/internal/service/entity"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/logs"
@@ -12,13 +11,11 @@ import (
 
 type BalanceService struct {
 	repo *repository.Repository
-	cfg  config.Config //TODO delete?
 }
 
-func NewBalanceService(repo *repository.Repository, cfg config.Config) *BalanceService {
+func NewBalanceService(repo *repository.Repository) *BalanceService {
 	return &BalanceService{
 		repo: repo,
-		cfg:  cfg,
 	}
 }
 
