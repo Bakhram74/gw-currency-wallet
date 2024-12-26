@@ -1,20 +1,18 @@
-// Package postgres implements postgres connection.
 package postgres
 
 import (
 	"context"
 	"fmt"
+	"log"
 	"time"
-
-	"log/slog"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 const (
-	_defaultMaxPoolSize  = 5
-	_defaultConnAttempts = 10
-	_defaultConnTimeout  = time.Second
+	defaultMaxPoolSize  = 1
+	defaultConnAttempts = 5
+	defaultConnTimeout  = time.Second * 3
 )
 
 type Postgres struct {
@@ -24,15 +22,11 @@ type Postgres struct {
 	Pool         *pgxpool.Pool
 }
 
-func New(url string, opts ...Option) (*Postgres, error) {
+func New(url string) (*pgxpool.Pool, error) {
 	pg := &Postgres{
-		maxPoolSize:  _defaultMaxPoolSize,
-		connAttempts: _defaultConnAttempts,
-		connTimeout:  _defaultConnTimeout,
-	}
-
-	for _, opt := range opts {
-		opt(pg)
+		maxPoolSize:  defaultMaxPoolSize,
+		connAttempts: defaultConnAttempts,
+		connTimeout:  defaultConnTimeout,
 	}
 
 	poolConfig, err := pgxpool.ParseConfig(url)
@@ -42,28 +36,41 @@ func New(url string, opts ...Option) (*Postgres, error) {
 
 	poolConfig.MaxConns = int32(pg.maxPoolSize)
 
-	for pg.connAttempts > 0 {
-		pg.Pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig)
-		if err == nil {
-			break
+	pg.Pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig)
+	if err != nil {
+		return nil, err
+	}
+
+	err = DoWithAttempts(func() error {
+		err := pg.Pool.Ping(context.Background())
+		if err != nil {
+			log.Printf("Failed to connect to postgres due to error %v... Going to do the next attempt\n", err)
+			return err
 		}
 
-		slog.Info("Postgres is trying to connect, attempts left:", slog.Int("attempts", pg.connAttempts))
-
-		time.Sleep(pg.connTimeout)
-
-		pg.connAttempts--
-	}
+		return nil
+	}, pg.connAttempts, pg.connTimeout)
 
 	if err != nil {
-		return nil, fmt.Errorf("postgres - NewPostgres - connAttempts == 0: %w", err)
+		log.Printf("All attempts are exceeded. Unable to connect to PostgreSQL")
+		return nil, err
 	}
 
-	return pg, nil
+	return pg.Pool, nil
 }
 
-func (p *Postgres) Close() {
-	if p.Pool != nil {
-		p.Pool.Close()
+func DoWithAttempts(fn func() error, maxAttempts int, delay time.Duration) error {
+	var err error
+
+	for maxAttempts > 0 {
+		if err = fn(); err != nil {
+			time.Sleep(delay)
+			maxAttempts--
+
+			continue
+		}
+
+		return nil
 	}
+	return err
 }

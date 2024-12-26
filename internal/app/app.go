@@ -31,12 +31,12 @@ func Run(cfg config.Config) {
 	}
 	defer pg.Close()
 
-	err = RunMigration(dbUrl)
-	if err != nil {
-		panic(fmt.Sprintf("Migration error: %s", err.Error()))
-	}
+	// err = RunMigration(dbUrl)
+	// if err != nil {
+	// 	panic(fmt.Sprintf("Migration error: %s", err.Error()))
+	// }
 
-	repo := repository.New(pg.Pool)
+	repo := repository.New(pg)
 
 	service := service.NewService(repo, jwtMaker, cfg)
 
