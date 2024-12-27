@@ -10,7 +10,7 @@ import (
 
 func New(port string) *grpc.ClientConn {
 
-	conn, err := grpc.Dial("localhost"+fmt.Sprintf(":%s", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.Dial("host.docker.internal"+fmt.Sprintf(":%s", port), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect %v", err)
 	}
