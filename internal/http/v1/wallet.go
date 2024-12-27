@@ -10,7 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
+// @Summary Get balance
+// @Security ApiKeyAuth
+// @Description Handler for Getting balance from wallet
+// @Tags wallet
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} entity.Balance
+// @Failure      400,404,500  {func}  httpserver.ErrorResponse
+// @Router /balance [get]
 func (r *Router) balance(ctx *gin.Context) {
 	userID, err := getUserId(ctx)
 
@@ -35,6 +43,16 @@ func (r *Router) balance(ctx *gin.Context) {
 	})
 }
 
+// @Summary Deposit
+// @Security ApiKeyAuth
+// @Description Deposit to users wallet
+// @Tags wallet
+// @Accept  json
+// @Produce  json
+// @Param input body entity.Transaction true "amount, currency"
+// @Success 200 {object} entity.DepositResponse
+// @Failure      400,404,500  {func}  httpserver.ErrorResponse
+// @Router /wallet/deposit [post]
 func (r *Router) deposit(ctx *gin.Context) {
 	userID, err := getUserId(ctx)
 	if err != nil {
@@ -80,6 +98,17 @@ func (r *Router) deposit(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp)
 }
 
+
+// @Summary Withdraw
+// @Security ApiKeyAuth
+// @Description Withdraw from users wallet
+// @Tags wallet
+// @Accept  json
+// @Produce  json
+// @Param input body entity.Transaction true "amount, currency"
+// @Success 200 {object} entity.DepositResponse
+// @Failure      400,404,500  {func}  httpserver.ErrorResponse
+// @Router /wallet/withdraw [post]
 func (r *Router) withdraw(ctx *gin.Context) {
 	userID, err := getUserId(ctx)
 	if err != nil {

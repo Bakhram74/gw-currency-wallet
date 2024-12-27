@@ -4,9 +4,12 @@ import (
 	"github.com/Bakhram74/gw-currency-wallet/internal/config"
 	v1 "github.com/Bakhram74/gw-currency-wallet/internal/http/v1"
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
+	_ "github.com/Bakhram74/gw-currency-wallet/docs"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/jwt"
 	"github.com/Bakhram74/proto-exchange/pb"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Handler struct {
@@ -44,4 +47,5 @@ func (h *Handler) initAPI(router *gin.Engine) {
 	{
 		v1.Init(api)
 	}
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 }

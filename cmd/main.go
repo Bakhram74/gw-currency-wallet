@@ -14,6 +14,14 @@ const (
 	envProd  = "prod"
 )
 
+// @title      Wallet-exchanger
+// @version 0.0.1
+// @description     API docs for Wallet-exchanger
+// @host      localhost:8080
+// @BasePath  /api/v1
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 
 	cfg := config.NewConfig()

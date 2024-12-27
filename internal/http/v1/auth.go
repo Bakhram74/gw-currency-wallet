@@ -10,6 +10,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary register
+// @Description Create user with his wallet.
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Param input body entity.RegisterReq true "name password email"
+// @Success 200 {string} string "User registered successfully"
+// @Failure      400,404,500  {func}  httpserver.ErrorResponse
+// @Router /register [post]
 func (r *Router) register(ctx *gin.Context) {
 	var reqBody entity.RegisterReq
 
@@ -33,6 +42,17 @@ func (r *Router) register(ctx *gin.Context) {
 	})
 }
 
+
+
+// @Summary login
+// @Description Login user.
+// @Tags auth
+// @Accept  json
+// @Produce  json
+// @Param input body entity.LoginReq true "name password"
+// @Success 200 {string} string "token"
+// @Failure      400,404,500  {func}  httpserver.ErrorResponse
+// @Router /login [post]
 func (r *Router) login(ctx *gin.Context) {
 	var reqBody entity.LoginReq
 

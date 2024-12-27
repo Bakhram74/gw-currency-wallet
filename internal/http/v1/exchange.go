@@ -13,6 +13,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary Get rates
+// @Security ApiKeyAuth
+// @Description Getting exchange rates from rub_rates table
+// @Tags exchange
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} map[string]float32
+// @Failure      400,404,500  {func}  httpserver.ErrorResponse
+// @Router /exchange/rates [get]
 func (r *Router) rates(ctx *gin.Context) {
 
 	resp, err := r.grpcClient.GetExchangeRates(ctx, &pb.Empty{})
@@ -24,6 +33,16 @@ func (r *Router) rates(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp.Rates)
 }
 
+// @Summary Exchange currency
+// @Security ApiKeyAuth
+// @Description Exchange currency
+// @Tags exchange
+// @Accept  json
+// @Produce  json
+// @Param input body entity.ExchangeReq true "FromCurrency, ToCurrency, Amount"
+// @Success 200 {object}  entity.ExchangeResponse
+// @Failure      400,404,500  {func}  httpserver.ErrorResponse
+// @Router /exchange/rates [get]
 func (r *Router) exchange(ctx *gin.Context) {
 	var reqBody entity.ExchangeReq
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
