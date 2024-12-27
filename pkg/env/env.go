@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // GetDomain -Получение домена из адреса пользователя
@@ -19,6 +20,20 @@ func GetEnv(key string, defaultVal string) string {
 		return value
 	}
 	return defaultVal
+}
+
+func GetEnvAsTime(name string, defaultValue time.Duration) time.Duration {
+	valueStr := GetEnv(name, "")
+
+	if valueStr == "" {
+		return defaultValue
+	}
+	if value, err := time.ParseDuration(valueStr); err == nil {
+		return value
+	} else {
+		log.Fatalf("GetEnvAsBool error: %v", err)
+	}
+	return defaultValue
 }
 
 // GetEnvAsInt - Получение переменной окружения с типом INT

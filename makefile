@@ -19,6 +19,8 @@ migrateup:
 migratedown:
 	migrate -path migrations -database "postgresql://postgres:secret@localhost:5432/wallet?sslmode=disable" -verbose down
 
+redis:
+	docker run --name cache -p 6379:6379 -d redis:7-alpine
 
 test:
 	go test -v -cover ./...

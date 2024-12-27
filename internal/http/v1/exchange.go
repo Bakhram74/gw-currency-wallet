@@ -7,6 +7,7 @@ import (
 
 	"github.com/Bakhram74/gw-currency-wallet/internal/repository"
 	"github.com/Bakhram74/gw-currency-wallet/internal/service/entity"
+	"github.com/Bakhram74/gw-currency-wallet/pkg/client/redis"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/httpserver"
 	"github.com/Bakhram74/proto-exchange/pb"
 	"github.com/gin-gonic/gin"
@@ -25,13 +26,12 @@ func (r *Router) rates(ctx *gin.Context) {
 
 func (r *Router) exchange(ctx *gin.Context) {
 	var reqBody entity.ExchangeReq
-
 	if err := ctx.ShouldBindJSON(&reqBody); err != nil {
 		httpserver.ErrorResponse(ctx, http.StatusBadRequest, err.Error())
 		return
 	}
-	userID, err := getUserId(ctx)
 
+	userID, err := getUserId(ctx)
 	if err != nil {
 		httpserver.ErrorResponse(ctx, http.StatusUnauthorized, err.Error())
 		return
@@ -40,18 +40,24 @@ func (r *Router) exchange(ctx *gin.Context) {
 	from := strings.ToUpper(reqBody.From)
 	to := strings.ToUpper(reqBody.To)
 
+	var rate float32
+
 	req := &pb.CurrencyRequest{
 		FromCurrency: from,
 		ToCurrency:   to,
 	}
 
-	rateResp, err := r.grpcClient.GetExchangeRateForCurrency(ctx, req)
+	rate, err = redis.GetRate(ctx, userID, from, to)
 	if err != nil {
-		httpserver.ErrorResponse(ctx, http.StatusInternalServerError, err.Error())
-		return
+		rateResp, err := r.grpcClient.GetExchangeRateForCurrency(ctx, req)
+		if err != nil {
+			httpserver.ErrorResponse(ctx, http.StatusInternalServerError, err.Error())
+			return
+		}
+		rate = rateResp.Rate
 	}
 
-	exchanged, err := r.service.Exchange.ExchangeCurrency(ctx, userID, from, to, rateResp.Rate, reqBody.Amount)
+	exchanged, err := r.service.Exchange.ExchangeCurrency(ctx, userID, from, to, rate, reqBody.Amount)
 	if err != nil {
 		if errors.Is(err, repository.ErrInsufficientBalance) {
 			httpserver.ErrorResponse(ctx, http.StatusBadRequest, ErrInsufficientAmount.Error())

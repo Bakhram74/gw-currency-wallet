@@ -15,6 +15,7 @@ type Config struct {
 	JWT      TokenConfig
 	HttpPort string
 	GrpcPort string
+	Redis    Redis
 }
 
 type StorageConfig struct {
@@ -29,6 +30,11 @@ type StorageConfig struct {
 type TokenConfig struct {
 	TokenSecretKey      string
 	AccessTokenDuration time.Duration
+}
+type Redis struct {
+	Host      string        `mapstructure:"host"`
+	Port      string        `mapstructure:"port"`
+	ExpiredAt time.Duration `mapstructure:"expired_at"`
 }
 
 func NewConfig() Config {
@@ -48,13 +54,20 @@ func NewConfig() Config {
 		TokenSecretKey:      env.GetEnv("TOKEN_SECRET_KEY", "cdwasfr43q12deasw90fj32lf8snre13"),
 		AccessTokenDuration: time.Hour * 100,
 	}
+
+	redis := Redis{
+		Host:      env.GetEnv("REDIS_HOST", "localhost"),
+		Port:      env.GetEnv("REDIS_PORT", "6379"),
+		ExpiredAt: env.GetEnvAsTime("REDIS_EXPIREDAT", time.Hour),
+	}
+
 	config := Config{
 		JWT:      token,
 		HttpPort: env.GetEnv("HTTP_PORT", "9090"),
 		GrpcPort: env.GetEnv("GRPC_PORT", "44044"),
 		Env:      env.GetEnv("ENVIRONMENT", "local"),
 		Storage:  storage,
-		
+		Redis:    redis,
 	}
 	return config
 }

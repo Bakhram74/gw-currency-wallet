@@ -13,6 +13,7 @@ import (
 	"github.com/Bakhram74/gw-currency-wallet/internal/repository"
 	"github.com/Bakhram74/gw-currency-wallet/internal/service"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/client/postgres"
+	"github.com/Bakhram74/gw-currency-wallet/pkg/client/redis"
 	httpserver "github.com/Bakhram74/gw-currency-wallet/pkg/httpserver"
 	"github.com/Bakhram74/gw-currency-wallet/pkg/jwt"
 	"github.com/Bakhram74/proto-exchange/pb"
@@ -40,6 +41,11 @@ func Run(cfg config.Config) {
 
 	repo := repository.New(pg)
 
+	err = redis.InitRedis(cfg.Redis)
+	if err != nil {
+		panic(err.Error())
+	}
+	
 	service := service.NewService(repo, jwtMaker, cfg)
 
 	conn := grpcClient.New(cfg.GrpcPort)
